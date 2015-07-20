@@ -71,8 +71,10 @@ namespace CsvSerializer
 		{
 			//cell.Column.Info.GetValue(rowObject, null).ToString();
 			object o = ResolveObjectPathOrNull(cell.Column.ObjectPath, rowObject, cell.Column.ObjectIndex);
-
-			return o.ToString();
+			if (o == null)
+				return string.Empty;
+			else
+				return o.ToString();
 		}
 
 		private object ResolveObjectPathOrNull(string path, object value, int? rownum = null)
@@ -125,7 +127,7 @@ namespace CsvSerializer
 						foreach (var pd in GetProperties(child, true, name, rownum++))
 							yield return pd;
 				}
-				else if (!IsCrlType(prop.PropertyType) && recursive)
+				else if (!IsCrlType(prop.PropertyType) && recursive && propValue != null)
 				{
 					foreach (var pd in GetProperties(propValue, true, name))
 						yield return pd;
